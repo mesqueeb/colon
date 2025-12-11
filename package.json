@@ -1,0 +1,52 @@
+{
+  "name": "colon",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "description": "`npm run :` for interactive script picker with auto-folders for scripts with \":\"",
+  "main": "index.js",
+  "bin": {
+    "colon": "./cli.js"
+  },
+  "scripts": {
+    "format": "oxfmt",
+    "lint": "oxlint --fix",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:project-a": "echo \"Starting dev server for project-a...\" && exit 1",
+    "dev:project-b": "echo \"Starting dev server for project-b...\" && exit 1",
+    "build:web:prod:minify": "echo \"Building web production with minification...\" && exit 1",
+    "build:web:dev:watch": "echo \"Building web dev with watch mode...\" && exit 1",
+    "build:mobile:ios:release": "echo \"Building iOS release build...\" && exit 1",
+    "build:mobile:android:release": "echo \"Building Android release build...\" && exit 1",
+    "build:mobile:ios:debug": "echo \"Building iOS debug build...\" && exit 1",
+    "build:mobile:android:debug": "echo \"Building Android debug build...\" && exit 1",
+    "test:unit:frontend:coverage": "echo \"Running frontend unit tests with coverage...\" && exit 1",
+    "test:unit:backend:watch": "echo \"Running backend unit tests in watch mode...\" && exit 1",
+    "deploy:staging:web:cdn": "echo \"Deploying web to staging CDN...\" && exit 1",
+    "deploy:production:api:rollback": "echo \"Rolling back production API...\" && exit 1",
+    "setup:test": "rm -rf node_modules/colon && mkdir -p node_modules/colon && rsync -av --exclude='node_modules' --exclude='.git' . node_modules/colon/ && cd node_modules/colon && npm install --no-save && cd ../.. && mkdir -p node_modules/.bin && ln -sf ../colon/cli.js node_modules/.bin/colon",
+    ":": "colon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mesqueeb/colon.git"
+  },
+  "keywords": [
+    "npm",
+    "run",
+    "colon"
+  ],
+  "author": "mesqueeb - Luca Ban",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mesqueeb/colon/issues"
+  },
+  "homepage": "https://github.com/mesqueeb/colon#readme",
+  "dependencies": {
+    "@inquirer/prompts": "^8.0.2"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.17.0",
+    "oxlint": "^1.32.0"
+  }
+}
