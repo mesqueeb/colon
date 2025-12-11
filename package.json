@@ -9,6 +9,7 @@
     "coloncli": "./cli.js"
   },
   "scripts": {
+    "release": "np",
     "format": "oxfmt",
     "lint": "oxlint --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -47,6 +48,7 @@
     "@inquirer/prompts": "^8.0.2"
   },
   "devDependencies": {
+    "np": "^10.2.0",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.32.0"
   }
