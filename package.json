@@ -38,6 +38,12 @@
     "run",
     "colon"
   ],
+  "files": [
+    "cli.js",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
   "author": "mesqueeb - Luca Ban",
   "license": "MIT",
   "bugs": {
