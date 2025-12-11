@@ -1,12 +1,12 @@
 {
-  "name": "colon",
+  "name": "coloncli",
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
   "description": "`npm run :` for interactive script picker with auto-folders for scripts with \":\"",
   "main": "index.js",
   "bin": {
-    "colon": "./cli.js"
+    "coloncli": "./cli.js"
   },
   "scripts": {
     "format": "oxfmt",
@@ -24,8 +24,8 @@
     "test:unit:backend:watch": "echo \"Running backend unit tests in watch mode...\" && exit 1",
     "deploy:staging:web:cdn": "echo \"Deploying web to staging CDN...\" && exit 1",
     "deploy:production:api:rollback": "echo \"Rolling back production API...\" && exit 1",
-    "setup:test": "rm -rf node_modules/colon && mkdir -p node_modules/colon && rsync -av --exclude='node_modules' --exclude='.git' . node_modules/colon/ && cd node_modules/colon && npm install --no-save && cd ../.. && mkdir -p node_modules/.bin && ln -sf ../colon/cli.js node_modules/.bin/colon",
-    ":": "colon"
+    "setup:test": "rm -rf node_modules/coloncli && mkdir -p node_modules/coloncli && rsync -av --exclude='node_modules' --exclude='.git' . node_modules/coloncli/ && cd node_modules/coloncli && npm install --no-save && cd ../.. && mkdir -p node_modules/.bin && ln -sf ../coloncli/cli.js node_modules/.bin/coloncli",
+    ":": "coloncli"
   },
   "repository": {
     "type": "git",

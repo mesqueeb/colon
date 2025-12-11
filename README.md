@@ -1,31 +1,33 @@
-# : 📁
+# :cli 📁
 
-<a href="https://www.npmjs.com/package/colon"><img src="https://img.shields.io/npm/v/colon.svg" alt="npm version"></a>
-<a href="https://www.npmjs.com/package/colon"><img src="https://img.shields.io/npm/dw/colon.svg" alt="npm downloads/week"></a>
+<a href="https://www.npmjs.com/package/coloncli"><img src="https://img.shields.io/npm/v/coloncli.svg" alt="npm version"></a>
+<a href="https://www.npmjs.com/package/coloncli"><img src="https://img.shields.io/npm/dw/coloncli.svg" alt="npm downloads/week"></a>
 
 ```
-npm i -D colon
+npm i -D coloncli
 ```
 
 Interactive script picker for npm scripts with automatic folder grouping. Run `npm run :` to browse and execute your scripts.
 
 ## Usage
 
+You can simply execute:
+
 ```
-npx colon
+npx coloncli
 ```
 
-Add to your `package.json`:
+OR, add to your `package.json`:
 
 ```json
 {
   "scripts": {
-    ":": "colon"
+    ":": "coloncli"
   }
 }
 ```
 
-Then run `npm run :` or use `npx colon`.
+Then run `npm run :`.
 
 ## How it works
 
