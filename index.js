@@ -49,12 +49,103 @@ if (totalScripts === 0) {
   process.exit(1)
 }
 
-// Create first-level choices: unique left sides + scripts without colons
-// Maintain order from package.json
-const firstLevelChoices = []
+// Recursive function to handle script selection at any level
+async function selectScript(prefix, scriptsToShow, allScripts) {
+  // Group scripts by next level
+  const nextLevelGroups = new Map()
+  const directScripts = []
 
-// Add items in order: left sides as they first appear, then scripts without colons
-// We'll build this by iterating through scripts in order
+  for (const { name, command } of scriptsToShow) {
+    const remaining = prefix ? name.substring(prefix.length + 1) : name
+    if (remaining.includes(":")) {
+      const nextLevel = remaining.split(":")[0]
+      if (!nextLevelGroups.has(nextLevel)) {
+        nextLevelGroups.set(nextLevel, [])
+      }
+      nextLevelGroups.get(nextLevel).push({ name, command })
+    } else {
+      directScripts.push({ name, command })
+    }
+  }
+
+  // Build choices for current level
+  const choices = []
+
+  // Add grouped next levels
+  for (const [nextLevel, scripts] of nextLevelGroups) {
+    // If only one script in this group, show the full remaining path
+    if (scripts.length === 1) {
+      const { name, command } = scripts[0]
+      const remaining = prefix ? name.substring(prefix.length + 1) : name
+      if (remaining.includes(":")) {
+        // Still has more levels, show as prefix but with full remaining path
+        const nextPrefix = prefix ? `${prefix}:${nextLevel}` : nextLevel
+        choices.push({
+          name: remaining,
+          description: command,
+          value: { type: "prefix", prefix: nextPrefix },
+        })
+      } else {
+        // Final script, show as script with full name
+        choices.push({
+          name,
+          description: command,
+          value: { type: "script", scriptName: name },
+        })
+      }
+    } else {
+      // Multiple scripts, show as folder
+      const displayPrefix = prefix ? `${prefix}:${nextLevel}` : nextLevel
+      choices.push({
+        name: `${nextLevel} / ...`,
+        description: `→ ${scripts.length} scripts`,
+        value: { type: "prefix", prefix: displayPrefix },
+      })
+    }
+  }
+
+  // Add direct scripts (no more colons)
+  for (const { name, command } of directScripts) {
+    choices.push({
+      name,
+      description: command,
+      value: { type: "script", scriptName: name },
+    })
+  }
+
+  // If only one choice, auto-select it
+  if (choices.length === 1) {
+    const selection = choices[0]
+    if (selection.value.type === "script") {
+      return selection.value.scriptName
+    } else {
+      // Auto-continue to next level for prefix
+      const nextScripts = allScripts.filter(({ name }) =>
+        name.startsWith(selection.value.prefix + ":"),
+      )
+      return selectScript(selection.value.prefix, nextScripts, allScripts)
+    }
+  }
+
+  // Prompt user to select
+  const message = prefix ? `Select a ${prefix} script:` : "Select a script to run:"
+  const selection = await select({
+    message,
+    choices,
+    pageSize: 50,
+  })
+
+  if (selection.type === "script") {
+    return selection.scriptName
+  } else {
+    // Continue to next level
+    const nextScripts = allScripts.filter(({ name }) => name.startsWith(selection.prefix + ":"))
+    return selectScript(selection.prefix, nextScripts, allScripts)
+  }
+}
+
+// Build initial scripts list maintaining order from package.json
+const initialScripts = []
 const seenLeftSides = new Set()
 
 for (const [name, command] of Object.entries(scripts)) {
@@ -69,128 +160,19 @@ for (const [name, command] of Object.entries(scripts)) {
     if (leftSide === "") {
       continue
     }
-    // Add left side when first encountered
+    // Add scripts grouped by left side, maintaining order
     if (!seenLeftSides.has(leftSide)) {
       seenLeftSides.add(leftSide)
-      firstLevelChoices.push({
-        name: `${leftSide} / ... [${scriptsWithColons.get(leftSide).length} scripts]`,
-        value: { type: "prefix", prefix: leftSide },
-      })
+      initialScripts.push(...scriptsWithColons.get(leftSide))
     }
   } else {
     // Add scripts without colons in their original order
-    firstLevelChoices.push({
-      name: `${name} — ${command}`,
-      value: { type: "script", scriptName: name },
-    })
+    initialScripts.push({ name, command })
   }
 }
 
-// Prompt user to select from first level
-const firstSelection = await select({
-  message: "Select a script to run:",
-  choices: firstLevelChoices,
-})
-
-let selectedScript
-
-if (firstSelection.type === "script") {
-  // Direct script selection (no colon)
-  selectedScript = firstSelection.scriptName
-} else {
-  // Prefix selected, recursively handle nested levels
-  let currentPrefix = firstSelection.prefix
-  let remainingScripts = scriptsWithColons.get(currentPrefix)
-
-  while (true) {
-    // Group remaining scripts by next level
-    const nextLevelGroups = new Map()
-    const directScripts = []
-
-    for (const { name, command } of remainingScripts) {
-      const remaining = name.substring(currentPrefix.length + 1)
-      if (remaining.includes(":")) {
-        const nextLevel = remaining.split(":")[0]
-        if (!nextLevelGroups.has(nextLevel)) {
-          nextLevelGroups.set(nextLevel, [])
-        }
-        nextLevelGroups.get(nextLevel).push({ name, command })
-      } else {
-        directScripts.push({ name, command })
-      }
-    }
-
-    // Build choices for current level
-    const choices = []
-
-    // Add grouped next levels
-    for (const [nextLevel, scripts] of nextLevelGroups) {
-      // If only one script in this group, show the full remaining path instead of folder format
-      if (scripts.length === 1) {
-        const { name, command } = scripts[0]
-        const remaining = name.substring(currentPrefix.length + 1)
-        if (remaining.includes(":")) {
-          // Still has more levels, show as prefix but with full path
-          choices.push({
-            name: `${remaining} — ${command}`,
-            value: { type: "prefix", prefix: `${currentPrefix}:${nextLevel}` },
-          })
-        } else {
-          // Final script, show as script
-          choices.push({
-            name: `${remaining} — ${command}`,
-            value: { type: "script", scriptName: name },
-          })
-        }
-      } else {
-        choices.push({
-          name: `${nextLevel} / ... [${scripts.length} scripts]`,
-          value: { type: "prefix", prefix: `${currentPrefix}:${nextLevel}` },
-        })
-      }
-    }
-
-    // Add direct scripts (no more colons)
-    for (const { name, command } of directScripts) {
-      const scriptName = name.substring(currentPrefix.length + 1)
-      choices.push({
-        name: `${scriptName} — ${command}`,
-        value: { type: "script", scriptName: name },
-      })
-    }
-
-    // If only one choice, auto-select it
-    if (choices.length === 1) {
-      const selection = choices[0]
-      if (selection.value.type === "script") {
-        selectedScript = selection.value.scriptName
-        break
-      } else {
-        // Auto-continue to next level for prefix
-        currentPrefix = selection.value.prefix
-        remainingScripts = remainingScripts.filter(({ name }) =>
-          name.startsWith(currentPrefix + ":"),
-        )
-        continue
-      }
-    }
-
-    // Prompt user to select
-    const selection = await select({
-      message: `Select a ${currentPrefix} script:`,
-      choices,
-    })
-
-    if (selection.type === "script") {
-      selectedScript = selection.scriptName
-      break
-    } else {
-      // Continue to next level - filter remaining scripts to those matching the new prefix
-      currentPrefix = selection.prefix
-      remainingScripts = remainingScripts.filter(({ name }) => name.startsWith(currentPrefix + ":"))
-    }
-  }
-}
+// Start the recursive selection process
+const selectedScript = await selectScript(null, initialScripts, initialScripts)
 
 // Execute the selected script
 console.log(`\nRunning: npm run ${selectedScript}\n`)

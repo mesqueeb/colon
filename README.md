@@ -49,6 +49,7 @@ Scripts with colons are automatically grouped into folders. For example:
 ```
 
 Navigation:
+
 - `dev` → shows `project-a` / `project-b` in a list
 - `build` → shows `web` / `mobile` in a list → they each show `prod` / `beta` in a list
 

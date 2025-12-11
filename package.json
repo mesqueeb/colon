@@ -12,6 +12,7 @@
     "format": "oxfmt",
     "lint": "oxlint --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:watch": "echo \"Starting test watcher...\" && exit 1",
     "dev:project-a": "echo \"Starting dev server for project-a...\" && exit 1",
     "dev:project-b": "echo \"Starting dev server for project-b...\" && exit 1",
     "build:web:prod:minify": "echo \"Building web production with minification...\" && exit 1",
