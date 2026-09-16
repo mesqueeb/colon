@@ -54,7 +54,7 @@
     "@inquirer/prompts": "^8.0.2"
   },
   "devDependencies": {
-    "np": "^10.2.0",
+    "np": "^12.1.1",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.32.0"
   }
