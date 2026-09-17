@@ -26,7 +26,7 @@
     "test:unit:backend:watch": "echo \"Running backend unit tests in watch mode...\" && exit 1",
     "deploy:staging:web:cdn": "echo \"Deploying web to staging CDN...\" && exit 1",
     "deploy:production:api:rollback": "echo \"Rolling back production API...\" && exit 1",
-    "setup:test": "rm -rf node_modules/coloncli && mkdir -p node_modules/coloncli && rsync -av --exclude='node_modules' --exclude='.git' . node_modules/coloncli/ && cd node_modules/coloncli && npm install --no-save && cd ../.. && mkdir -p node_modules/.bin && ln -sf ../coloncli/cli.js node_modules/.bin/coloncli",
+    "setup:test": "rm -rf node_modules/coloncli && mkdir -p node_modules/coloncli && rsync -av --exclude='node_modules' --exclude='.git' . node_modules/coloncli/ && cd node_modules/coloncli && pnpm install --no-save && cd ../.. && mkdir -p node_modules/.bin && ln -sf ../coloncli/cli.js node_modules/.bin/coloncli",
     ":": "coloncli"
   },
   "repository": {
@@ -51,11 +51,12 @@
   },
   "homepage": "https://github.com/mesqueeb/colon#readme",
   "dependencies": {
-    "@inquirer/prompts": "^8.0.2"
+    "@inquirer/prompts": "^8.7.2"
   },
   "devDependencies": {
     "np": "^12.1.1",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.32.0"
-  }
+  },
+  "packageManager": "pnpm@11.27.0"
 }
