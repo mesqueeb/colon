@@ -9,7 +9,7 @@
     "coloncli": "./cli.js"
   },
   "scripts": {
-    "release": "np",
+    "release": "bumpp --no-push && pnpm publish --no-git-checks && git push --follow-tags && gh release create $(git describe --tags --abbrev=0) --generate-notes",
     "format": "oxfmt",
     "lint": "oxlint --fix",
     "test": "echo \"Error: no test specified\" && exit 0",
@@ -54,7 +54,7 @@
     "@inquirer/prompts": "^8.7.2"
   },
   "devDependencies": {
-    "np": "^12.1.1",
+    "bumpp": "^12.3.0",
     "oxfmt": "^0.17.0",
     "oxlint": "^1.83.0"
   },
