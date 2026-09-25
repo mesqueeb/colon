@@ -43,7 +43,7 @@ Scripts with colons are automatically grouped into folders. For example:
     "build:web:prod": "vite build --config web-prod",
     "build:web:beta": "vite build --config web-beta",
     "build:mobile:prod": "vite build --config mobile-prod",
-    "build:mobile:beta": "vite build --config mobile-beta",
+    "build:mobile:beta": "vite build --config mobile-beta"
   }
 }
 ```
